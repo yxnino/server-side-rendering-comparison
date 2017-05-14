@@ -8,3 +8,5 @@ ab -n1000 -c50 http://127.0.0.1:3300/rax
 ab -n1000 -c50 http://127.0.0.1:3300/react
 ab -n1000 -c50 http://127.0.0.1:3300/inferno
 ab -n1000 -c50 http://127.0.0.1:3300/vue
+ab -n1000 -c50 http://127.0.0.1:3300/preact
+ab -n1000 -c50 http://127.0.0.1:3300/marko

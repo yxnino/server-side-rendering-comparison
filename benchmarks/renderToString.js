@@ -17,7 +17,7 @@ const Preact = require('preact');
 const preactRenderToString = require('preact-render-to-string');
 const InfernoServer = require('inferno-server');
 const infernoCreateElement = require('inferno-create-element');
-const {render} = require("rapscallion");
+const { render } = require("rapscallion");
 
 const ReactApp = require('../assets/build/server.react.bundle').default;
 const RaxApp = require('../assets/build/server.rax.bundle').default;
@@ -48,37 +48,45 @@ const vueVm = new Vue({
 const suite = new Benchmark.Suite;
 
 suite
-  .add('React#renderToString', function() {
+  .add('React#renderToString', function () {
     ReactDOMServer.renderToString(React.createElement(ReactApp, data));
   })
-  .add('Rax#renderToString', function() {
+  .add('Rax#renderToString', function () {
     raxRenderToString(Rax.createElement(RaxApp, data));
   })
-  .add('Inferno#renderToString', function() {
+  .add('Inferno#renderToString', function () {
     InfernoServer.renderToString(infernoCreateElement(InfernoApp, data));
   })
-  .add('Preact#renderToString', function() {
+  .add('Preact#renderToString', function () {
     preactRenderToString(Preact.h(PreactApp, data));
   })
-  .add('Rapscallion#render', function(deferred) {
+  .add('Rapscallion#render', function (deferred) {
     render(React.createElement(ReactApp, data)).toPromise()
-    .then(htmlString => {
-      deferred.resolve();
-    });;
-  }, {defer: true})
-  .add('Marko#renderToString', function() {
+      .then(htmlString => {
+        deferred.resolve();
+      });;
+  }, { defer: true })
+  .add('Marko#renderToString', function () {
     MarkoApp.renderToString(data);
   })
-  .add('Xtpl#renderFile', function(deferred){
-    xtpl.renderFile(xtplAppPath, data, function(error, content){
+  .add('Vue2#renderToString', function (deferred) {
+    vueRenderToString(vueVm, function (err, html) {
+      if (err) {
+        return
+      }
+      deferred.resolve()
+    })
+  })
+  .add('Xtpl#renderFile', function (deferred) {
+    xtpl.renderFile(xtplAppPath, data, function (error, content) {
       deferred.resolve();
     });
-  }, {defer: true})
+  }, { defer: true })
   // add listeners
-  .on('cycle', function(event) {
+  .on('cycle', function (event) {
     console.log(String(event.target));
   })
-  .on('complete', function() {
+  .on('complete', function () {
     console.log('Fastest is ' + this.filter('fastest').map('name'));
   })
   // run async
